@@ -31,7 +31,7 @@ public class SignInTest {
         try {
             Thread.sleep(durationInMilliSeconds);
         } catch (InterruptedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();  
         }
     }
 
