@@ -1,63 +1,42 @@
-import com.sun.javafx.PlatformUtil;
-
-import java.util.concurrent.TimeUnit;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class SignInTest {
-
-    WebDriver driver = new ChromeDriver();
+public class SignInTest extends SuperTestNG {
+	
+	static ClearTripObjects clearTrip;
 
     @Test
     public void shouldThrowAnErrorIfSignInDetailsAreMissing() {
-
-        setDriverPath();
-
-        driver.get("https://www.cleartrip.com/");
-        waitFor(2000);
+    	//Create instance of ClaerTripObjcets
+    	clearTrip=PageFactory.initElements(driver, ClearTripObjects.class);
+    	
+    	//Click on Your Trip link
+        CommonUtils.clickOnElement(clearTrip.getYourTripLink());
         
-        driver.manage().window().maximize();
+        //Click on Sign in button
+        CommonUtils.clickOnElement(clearTrip.getSignInLink());
 
-        driver.findElement(By.linkText("Your trips")).click();
-        driver.findElement(By.id("SignIn")).click();
-
-        //Here we need to switch to new frame.
-        //driver.switchTo().frame(driver.findElement(By.xpath("//iframe[@src='https://www.cleartrip.com/signin?popup=yes&service=/']")));
-        driver.switchTo().frame("modal_window");
-        waitFor(2000);
+        //Here switch to new frame.
+        CommonUtils.switchToFrameByName("modal_window");
         
-        driver.findElement(By.xpath("//button[@class='primary']")).click();
-
-        String errors1 = driver.findElement(By.id("errors1")).getText();
-        Assert.assertTrue(errors1.contains("There were errors in your submission"));
-        driver.quit();
+        //Wait for the element
+        CommonUtils.explicitWaitIfElementVisible(driver, 20, clearTrip.getSignInFrameLink());
+        
+        //Clcik on Sign in to link
+        CommonUtils.clickOnElement(clearTrip.getSignInFrameLink());
+        
+        //Verifiy the error message display without entering username and password
+        String actual = CommonUtils.textOfElemet(clearTrip.getSignInErrorMessage());
+        String expected="There were errors in your submission";
+        Assert.assertTrue(actual.contains(expected));
+        
     }
 
     
-    private void waitFor(int durationInMilliSeconds) {
-        try {
-            Thread.sleep(durationInMilliSeconds);
-        } catch (InterruptedException e) {
-            e.printStackTrace();  
-        }
-    }
+    
 
-    private void setDriverPath() {
-        if (PlatformUtil.isMac()) {
-            System.setProperty("webdriver.chrome.driver", "chromedriver_mac.exe");
-        }
-        if (PlatformUtil.isWindows()) {
-            System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
-        }
-        if (PlatformUtil.isLinux()) {
-            System.setProperty("webdriver.chrome.driver", "chromedriver_linux.exe");
-        }
-    }
+    
    
 
 
