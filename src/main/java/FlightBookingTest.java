@@ -9,6 +9,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class FlightBookingTest {
 
@@ -20,6 +21,9 @@ public class FlightBookingTest {
 
         setDriverPath();
         driver.get("https://www.cleartrip.com/");
+        
+        driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
+        driver.manage().window().maximize();
         waitFor(2000);
         driver.findElement(By.id("OneWay")).click();
 
@@ -32,8 +36,8 @@ public class FlightBookingTest {
         List<WebElement> originOptions = driver.findElement(By.id("ui-id-1")).findElements(By.tagName("li"));
         originOptions.get(0).click();
 
-        driver.findElement(By.id("toTag")).clear();
-        driver.findElement(By.id("toTag")).sendKeys("Delhi");
+        driver.findElement(By.id("ToTag")).clear();
+        driver.findElement(By.id("ToTag")).sendKeys("Delhi");
 
         //wait for the auto complete options to appear for the destination
 
@@ -77,13 +81,13 @@ public class FlightBookingTest {
 
     private void setDriverPath() {
         if (PlatformUtil.isMac()) {
-            System.setProperty("webdriver.chrome.driver", "chromedriver");
+            System.setProperty("webdriver.chrome.driver", "chromedriver_mac.exe");
         }
         if (PlatformUtil.isWindows()) {
             System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
         }
         if (PlatformUtil.isLinux()) {
-            System.setProperty("webdriver.chrome.driver", "chromedriver_linux");
+            System.setProperty("webdriver.chrome.driver", "chromedriver_linux.exe");
         }
     }
 }
